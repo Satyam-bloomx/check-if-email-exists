@@ -47,7 +47,13 @@ export default function ResultModal({ result, onClose }) {
 
         <div className="modal-grid">
           <div className="modal-field">
-            <label>STATUS</label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              STATUS
+              <div className="info-icon-wrapper">
+                <Info size={14} />
+                <span className="custom-tooltip">The overall deliverability rating of the email address (Safe, Risky, Invalid, or Unknown).</span>
+              </div>
+            </label>
             <div className="field-value" style={{ borderColor: getStatusColor(status) }}>
               {status}
             </div>
@@ -69,17 +75,35 @@ export default function ResultModal({ result, onClose }) {
           </div>
 
           <div className="modal-field">
-            <label>ACCOUNT</label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              ACCOUNT
+              <div className="info-icon-wrapper">
+                <Info size={14} />
+                <span className="custom-tooltip">The local part of the email address (everything before the @ symbol).</span>
+              </div>
+            </label>
             <div className="field-value">{username}</div>
           </div>
 
           <div className="modal-field">
-            <label>DOMAIN</label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              DOMAIN
+              <div className="info-icon-wrapper">
+                <Info size={14} />
+                <span className="custom-tooltip">The domain part of the email address (everything after the @ symbol).</span>
+              </div>
+            </label>
             <div className="field-value">{domain}</div>
           </div>
 
           <div className="modal-field">
-            <label>MX FOUND</label>
+            <label style={{ display: 'flex', alignItems: 'center' }}>
+              MX FOUND
+              <div className="info-icon-wrapper">
+                <Info size={14} />
+                <span className="custom-tooltip">Indicates whether a Mail Exchanger server was found. If 'No', the domain cannot receive emails and will bounce.</span>
+              </div>
+            </label>
             <div className="field-value">{mxFound}</div>
           </div>
         </div>
