@@ -374,6 +374,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .modal-content {
   background: var(--card-bg);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
   color: var(--text-color);
   padding: 2.5rem;
   border-radius: 16px;
@@ -607,3 +609,4 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 1;
   transform: translateX(-50%) translateY(-2px);
 }
+
