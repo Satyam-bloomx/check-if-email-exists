@@ -19,7 +19,7 @@ export default function SingleVerifier() {
     setIsLoading(true);
 
     try {
-      const response = await fetch('/v0/check_email', {
+      const response = await fetch('/v1/check_email', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json'
