@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import Uploader from './components/Uploader';
 import ProgressMonitor from './components/ProgressMonitor';
 import DownloadResults from './components/DownloadResults';
@@ -10,9 +10,19 @@ function App() {
   const [jobData, setJobData] = useState(null);
   const [status, setStatus] = useState('idle'); // 'idle', 'polling', 'completed'
 
+  useEffect(() => {
+    const cachedJobId = localStorage.getItem('reacher_active_job');
+    if (cachedJobId) {
+      setJobId(parseInt(cachedJobId, 10));
+      setStatus('polling');
+      setMode('bulk');
+    }
+  }, []);
+
   const handleJobCreated = (id) => {
     setJobId(id);
     setStatus('polling');
+    localStorage.setItem('reacher_active_job', id);
   };
 
   const handleJobCompleted = (data) => {
@@ -24,6 +34,7 @@ function App() {
     setJobId(null);
     setJobData(null);
     setStatus('idle');
+    localStorage.removeItem('reacher_active_job');
   };
 
   return (

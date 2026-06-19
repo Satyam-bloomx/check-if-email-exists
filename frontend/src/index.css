@@ -374,7 +374,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .modal-content {
-  background: var(--card-bg);
+  background: var(--bg-color);
   backdrop-filter: blur(16px);
   -webkit-backdrop-filter: blur(16px);
   color: var(--text-color);
@@ -612,3 +612,110 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 
+
+/* Paginated Results Table */
+.results-table-container {
+  margin-top: 2rem;
+  background: var(--card-bg);
+  border-radius: var(--radius-lg);
+  border: 1px solid var(--card-border);
+  overflow: hidden;
+}
+
+.table-responsive {
+  overflow-x: auto;
+}
+
+.results-table {
+  width: 100%;
+  border-collapse: collapse;
+  text-align: left;
+}
+
+.results-table th {
+  background: rgba(10, 41, 71, 0.05);
+  padding: 12px 16px;
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: var(--text-muted);
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+  border-bottom: 1px solid var(--card-border);
+}
+
+.results-table td {
+  padding: 12px 16px;
+  border-bottom: 1px solid rgba(10, 41, 71, 0.05);
+  font-size: 0.95rem;
+  color: var(--text-color);
+}
+
+.results-table tr:last-child td {
+  border-bottom: none;
+}
+
+.results-table tbody tr:hover {
+  background: rgba(10, 41, 71, 0.02);
+}
+
+.email-cell {
+  font-weight: 500;
+}
+
+.substatus-cell {
+  color: var(--text-muted);
+}
+
+.badge {
+  display: inline-block;
+  padding: 4px 8px;
+  border-radius: 12px;
+  font-size: 0.75rem;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.badge-success { background: rgba(16, 185, 129, 0.1); color: var(--success); }
+.badge-error { background: rgba(239, 68, 68, 0.1); color: var(--danger); }
+.badge-warning { background: rgba(245, 158, 11, 0.1); color: var(--warning); }
+.badge-unknown { background: rgba(139, 94, 60, 0.1); color: var(--text-muted); }
+
+.pagination-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 16px;
+  padding: 16px;
+  background: rgba(10, 41, 71, 0.02);
+  border-top: 1px solid var(--card-border);
+}
+
+.btn-icon {
+  background: white;
+  border: 1px solid var(--card-border);
+  border-radius: 6px;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-color);
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.btn-icon:hover:not(:disabled) {
+  background: rgba(10, 41, 71, 0.05);
+}
+
+.btn-icon:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.page-info {
+  font-size: 0.9rem;
+  font-weight: 500;
+  color: var(--text-muted);
+}
