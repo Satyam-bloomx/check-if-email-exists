@@ -56,6 +56,7 @@ h1, h2, h3, h4, h5, h6 {
   margin-bottom: 0.5rem;
   background: var(--primary-gradient);
   -webkit-background-clip: text;
+  background-clip: text;
   -webkit-text-fill-color: transparent;
 }
 
@@ -120,7 +121,7 @@ h1, h2, h3, h4, h5, h6 {
   padding: 3rem 2rem;
   text-align: center;
   transition: var(--transition);
-  background: rgba(255, 255, 255, 0.02);
+  background: rgba(10, 41, 71, 0.05);
   cursor: pointer;
   display: flex;
   flex-direction: column;
@@ -170,7 +171,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .progress-track {
   height: 8px;
-  background: rgba(255, 255, 255, 0.1);
+  background: rgba(10, 41, 71, 0.1);
   border-radius: 4px;
   overflow: hidden;
 }
@@ -343,7 +344,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .tab-btn:hover {
   color: var(--text-color);
-  background: rgba(255, 255, 255, 0.05);
+  background: rgba(10, 41, 71, 0.05);
 }
 
 .tab-btn.active {
@@ -609,4 +610,5 @@ h1, h2, h3, h4, h5, h6 {
   opacity: 1;
   transform: translateX(-50%) translateY(-2px);
 }
+
 
