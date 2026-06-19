@@ -118,9 +118,9 @@ impl TryFrom<CsvWrapper> for JobResultCsvResponse {
 					for (key, val) in mx_obj.keys().zip(mx_obj.values()) {
 						match key.as_str() {
 							"error" => error = Some(val.to_string()),
-							"accepts_email" => {
+							"accepts_mail" => {
 								mx_accepts_mail =
-									val.as_bool().ok_or("accepts_email should be a boolean")?
+									val.as_bool().ok_or("accepts_mail should be a boolean")?
 							}
 							_ => {}
 						}
