@@ -28,30 +28,12 @@ pub struct CsvWrapper(pub serde_json::Value);
 pub struct CsvResponse {
 	input: String,
 	is_reachable: String,
-	#[serde(rename = "misc.is_disposable")]
-	misc_is_disposable: bool,
-	#[serde(rename = "misc.is_role_account")]
-	misc_is_role_account: bool,
-	#[serde(rename = "misc.gravatar_url")]
-	misc_gravatar_url: Option<String>,
-	#[serde(rename = "mx.accepts_mail")]
-	mx_accepts_mail: bool,
-	#[serde(rename = "smtp.can_connect")]
-	smtp_can_connect: bool,
-	#[serde(rename = "smtp.has_full_inbox")]
-	smtp_has_full_inbox: bool,
-	#[serde(rename = "smtp.is_catch_all")]
-	smtp_is_catch_all: bool,
-	#[serde(rename = "smtp.is_deliverable")]
-	smtp_is_deliverable: bool,
-	#[serde(rename = "smtp.is_disabled")]
-	smtp_is_disabled: bool,
-	#[serde(rename = "syntax.is_valid_syntax")]
-	syntax_is_valid_syntax: bool,
-	#[serde(rename = "syntax.domain")]
-	syntax_domain: String,
-	#[serde(rename = "syntax.username")]
-	syntax_username: String,
+	#[serde(rename = "is_disposable")]
+	is_disposable: bool,
+	#[serde(rename = "is_role_account")]
+	is_role_account: bool,
+	#[serde(rename = "is_catch_all")]
+	is_catch_all: bool,
 	error: Option<String>,
 }
 
@@ -76,42 +58,20 @@ impl TryFrom<CsvWrapper> for CsvResponse {
 			.to_string();
 
 		let misc = top_level.get("misc").and_then(|v| v.as_object());
-		let misc_is_disposable = misc.and_then(|m| m.get("is_disposable")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let misc_is_role_account = misc.and_then(|m| m.get("is_role_account")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let misc_gravatar_url = misc.and_then(|m| m.get("gravatar_url")).and_then(|v| v.as_str()).map(|s| s.to_string());
-
-		let mx = top_level.get("mx").and_then(|v| v.as_object());
-		let mx_accepts_mail = mx.and_then(|m| m.get("accepts_mail")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let is_disposable = misc.and_then(|m| m.get("is_disposable")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let is_role_account = misc.and_then(|m| m.get("is_role_account")).and_then(|v| v.as_bool()).unwrap_or(false);
 
 		let smtp = top_level.get("smtp").and_then(|v| v.as_object());
-		let smtp_can_connect = smtp.and_then(|s| s.get("can_connect_smtp")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let smtp_has_full_inbox = smtp.and_then(|s| s.get("has_full_inbox")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let smtp_is_catch_all = smtp.and_then(|s| s.get("is_catch_all")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let smtp_is_deliverable = smtp.and_then(|s| s.get("is_deliverable")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let smtp_is_disabled = smtp.and_then(|s| s.get("is_disabled")).and_then(|v| v.as_bool()).unwrap_or(false);
-
-		let syntax = top_level.get("syntax").and_then(|v| v.as_object());
-		let syntax_is_valid_syntax = syntax.and_then(|s| s.get("is_valid_syntax")).and_then(|v| v.as_bool()).unwrap_or(false);
-		let syntax_domain = syntax.and_then(|s| s.get("domain")).and_then(|v| v.as_str()).unwrap_or("").to_string();
-		let syntax_username = syntax.and_then(|s| s.get("username")).and_then(|v| v.as_str()).unwrap_or("").to_string();
+		let is_catch_all = smtp.and_then(|s| s.get("is_catch_all")).and_then(|v| v.as_bool()).unwrap_or(false);
 
 		let error = top_level.get("error").map(|v| v.to_string());
 
 		Ok(CsvResponse {
 			input,
 			is_reachable,
-			misc_is_disposable,
-			misc_is_role_account,
-			misc_gravatar_url,
-			mx_accepts_mail,
-			smtp_can_connect,
-			smtp_has_full_inbox,
-			smtp_is_catch_all,
-			smtp_is_deliverable,
-			smtp_is_disabled,
-			syntax_is_valid_syntax,
-			syntax_domain,
-			syntax_username,
+			is_disposable,
+			is_role_account,
+			is_catch_all,
 			error,
 		})
 	}

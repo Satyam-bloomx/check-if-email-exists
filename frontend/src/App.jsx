@@ -2,8 +2,10 @@ import { useState } from 'react';
 import Uploader from './components/Uploader';
 import ProgressMonitor from './components/ProgressMonitor';
 import DownloadResults from './components/DownloadResults';
+import SingleVerifier from './components/SingleVerifier';
 
 function App() {
+  const [mode, setMode] = useState('single'); // 'single' or 'bulk'
   const [jobId, setJobId] = useState(null);
   const [jobData, setJobData] = useState(null);
   const [status, setStatus] = useState('idle'); // 'idle', 'polling', 'completed'
@@ -26,28 +28,50 @@ function App() {
 
   return (
     <div className="app-container">
-      <div className="header">
-        <h1>Reacher Bulk Verifier</h1>
-        <p>Upload a CSV file of email addresses to verify them instantly.</p>
+      <nav className="top-navbar">
+        <div className="brand-logo">
+          <img src="/logo.png" alt="Reacher Logo" className="logo-img" />
+        </div>
+      </nav>
+
+      <div className="mode-tabs">
+        <button 
+          className={`tab-btn ${mode === 'single' ? 'active' : ''}`} 
+          onClick={() => setMode('single')}
+        >
+          Single Email
+        </button>
+        <button 
+          className={`tab-btn ${mode === 'bulk' ? 'active' : ''}`} 
+          onClick={() => setMode('bulk')}
+        >
+          Bulk List
+        </button>
       </div>
 
       <main>
-        {status === 'idle' && (
-          <Uploader onJobCreated={handleJobCreated} />
-        )}
-        
-        {status === 'polling' && jobId && (
-          <ProgressMonitor 
-            jobId={jobId} 
-            onComplete={handleJobCompleted} 
-          />
-        )}
+        {mode === 'single' ? (
+          <SingleVerifier />
+        ) : (
+          <>
+            {status === 'idle' && (
+              <Uploader onJobCreated={handleJobCreated} />
+            )}
 
-        {status === 'completed' && jobData && (
-          <DownloadResults 
-            jobData={jobData} 
-            onReset={handleReset} 
-          />
+            {status === 'polling' && jobId && (
+              <ProgressMonitor
+                jobId={jobId}
+                onComplete={handleJobCompleted}
+              />
+            )}
+
+            {status === 'completed' && jobData && (
+              <DownloadResults
+                jobData={jobData}
+                onReset={handleReset}
+              />
+            )}
+          </>
         )}
       </main>
     </div>
