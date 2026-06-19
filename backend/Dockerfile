@@ -27,9 +27,11 @@ ENV SQLX_OFFLINE=true
 # 3. Build dependencies (this layer will be cached by Docker)
 RUN cargo build --jobs 1 --release --target=x86_64-unknown-linux-musl
 
-# 4. Remove dummy build artifacts
+# 4. Remove dummy build artifacts (including fingerprints to force recompilation of local crates)
 RUN rm -rf target/x86_64-unknown-linux-musl/release/deps/reacher* \
            target/x86_64-unknown-linux-musl/release/deps/check_if_email_exists* \
+           target/x86_64-unknown-linux-musl/release/.fingerprint/reacher* \
+           target/x86_64-unknown-linux-musl/release/.fingerprint/check_if_email_exists* \
            target/x86_64-unknown-linux-musl/release/reacher*
 
 # 5. Copy the actual source code
