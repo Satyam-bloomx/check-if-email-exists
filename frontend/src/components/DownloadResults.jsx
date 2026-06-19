@@ -1,5 +1,4 @@
 import { Download, CheckCircle, RefreshCcw } from 'lucide-react';
-import PaginatedResultsTable from './PaginatedResultsTable';
 
 export default function DownloadResults({ jobData, onReset }) {
   const { job_id, summary, total_records } = jobData;
@@ -39,14 +38,12 @@ export default function DownloadResults({ jobData, onReset }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center', marginBottom: '2rem' }}>
+      <div style={{ display: 'flex', gap: '1rem', justifyContent: 'center' }}>
         <button onClick={handleDownload} className="btn btn-primary" style={{ padding: '1rem 2rem', fontSize: '1.1rem' }}>
           <Download size={20} />
           Download CSV Results
         </button>
       </div>
-
-      <PaginatedResultsTable jobId={job_id} totalRecords={total_records} />
 
       <div className="mt-8">
         <button 
