@@ -75,75 +75,25 @@ impl TryFrom<CsvWrapper> for CsvResponse {
 			.ok_or("is_reachable should be a string")?
 			.to_string();
 
-		let misc = top_level
-			.get("misc")
-			.and_then(|v| v.as_object())
-			.ok_or("misc field should be an object")?;
-		let misc_is_disposable = misc
-			.get("is_disposable")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_disposable should be a boolean")?;
-		let misc_is_role_account = misc
-			.get("is_role_account")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_role_account should be a boolean")?;
-		let misc_gravatar_url = misc
-			.get("gravatar_url")
-			.and_then(|v| v.as_str())
-			.map(|s| s.to_string());
+		let misc = top_level.get("misc").and_then(|v| v.as_object());
+		let misc_is_disposable = misc.and_then(|m| m.get("is_disposable")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let misc_is_role_account = misc.and_then(|m| m.get("is_role_account")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let misc_gravatar_url = misc.and_then(|m| m.get("gravatar_url")).and_then(|v| v.as_str()).map(|s| s.to_string());
 
-		let mx = top_level
-			.get("mx")
-			.and_then(|v| v.as_object())
-			.ok_or("mx field should be an object")?;
-		let mx_accepts_mail = mx
-			.get("accepts_mail")
-			.and_then(|v| v.as_bool())
-			.ok_or("accepts_mail should be a boolean")?;
+		let mx = top_level.get("mx").and_then(|v| v.as_object());
+		let mx_accepts_mail = mx.and_then(|m| m.get("accepts_mail")).and_then(|v| v.as_bool()).unwrap_or(false);
 
-		let smtp = top_level
-			.get("smtp")
-			.and_then(|v| v.as_object())
-			.ok_or("smtp field should be an object")?;
-		let smtp_can_connect = smtp
-			.get("can_connect_smtp")
-			.and_then(|v| v.as_bool())
-			.ok_or("can_connect_smtp should be a boolean")?;
-		let smtp_has_full_inbox = smtp
-			.get("has_full_inbox")
-			.and_then(|v| v.as_bool())
-			.ok_or("has_full_inbox should be a boolean")?;
-		let smtp_is_catch_all = smtp
-			.get("is_catch_all")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_catch_all should be a boolean")?;
-		let smtp_is_deliverable = smtp
-			.get("is_deliverable")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_deliverable should be a boolean")?;
-		let smtp_is_disabled = smtp
-			.get("is_disabled")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_disabled should be a boolean")?;
+		let smtp = top_level.get("smtp").and_then(|v| v.as_object());
+		let smtp_can_connect = smtp.and_then(|s| s.get("can_connect_smtp")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let smtp_has_full_inbox = smtp.and_then(|s| s.get("has_full_inbox")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let smtp_is_catch_all = smtp.and_then(|s| s.get("is_catch_all")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let smtp_is_deliverable = smtp.and_then(|s| s.get("is_deliverable")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let smtp_is_disabled = smtp.and_then(|s| s.get("is_disabled")).and_then(|v| v.as_bool()).unwrap_or(false);
 
-		let syntax = top_level
-			.get("syntax")
-			.and_then(|v| v.as_object())
-			.ok_or("syntax field should be an object")?;
-		let syntax_is_valid_syntax = syntax
-			.get("is_valid_syntax")
-			.and_then(|v| v.as_bool())
-			.ok_or("is_valid_syntax should be a boolean")?;
-		let syntax_domain = syntax
-			.get("domain")
-			.and_then(|v| v.as_str())
-			.ok_or("domain should be a string")?
-			.to_string();
-		let syntax_username = syntax
-			.get("username")
-			.and_then(|v| v.as_str())
-			.ok_or("username should be a string")?
-			.to_string();
+		let syntax = top_level.get("syntax").and_then(|v| v.as_object());
+		let syntax_is_valid_syntax = syntax.and_then(|s| s.get("is_valid_syntax")).and_then(|v| v.as_bool()).unwrap_or(false);
+		let syntax_domain = syntax.and_then(|s| s.get("domain")).and_then(|v| v.as_str()).unwrap_or("").to_string();
+		let syntax_username = syntax.and_then(|s| s.get("username")).and_then(|v| v.as_str()).unwrap_or("").to_string();
 
 		let error = top_level.get("error").map(|v| v.to_string());
 

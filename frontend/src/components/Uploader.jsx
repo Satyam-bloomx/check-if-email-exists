@@ -1,5 +1,6 @@
 import { useState, useCallback } from 'react';
 import Papa from 'papaparse';
+import * as XLSX from 'xlsx';
 import { UploadCloud, FileType, AlertCircle } from 'lucide-react';
 
 export default function Uploader({ onJobCreated }) {
@@ -34,66 +35,98 @@ export default function Uploader({ onJobCreated }) {
     }
   };
 
-  const processFile = (file) => {
-    if (file.type !== 'text/csv' && !file.name.endsWith('.csv')) {
-      setError('Please upload a valid CSV file.');
+  const processFile = async (file) => {
+    const ext = file.name.split('.').pop().toLowerCase();
+    const validExts = ['csv', 'txt', 'json', 'xlsx', 'xls'];
+    
+    if (!validExts.includes(ext)) {
+      setError('Please upload a valid file (.csv, .txt, .json, .xlsx, .xls).');
       return;
     }
 
     setIsLoading(true);
 
-    Papa.parse(file, {
-      header: true,
-      skipEmptyLines: true,
-      complete: (results) => {
-        if (!results.data || results.data.length === 0) {
-          setError('The CSV file is empty.');
-          setIsLoading(false);
-          return;
-        }
+    try {
+      let emails = [];
 
-        // Try to automatically find the email column
-        const headers = results.meta.fields || [];
-        let emailColumn = headers.find(h => 
+      if (ext === 'txt') {
+        const text = await file.text();
+        emails = text.split(/\r?\n/).map(e => e.trim()).filter(e => e.length > 0 && e.includes('@'));
+      } else if (ext === 'json') {
+        const text = await file.text();
+        const data = JSON.parse(text);
+        if (Array.isArray(data)) {
+          emails = data.map(item => typeof item === 'string' ? item : item.email || item.mail || '').map(e => String(e).trim()).filter(e => e.length > 0 && e.includes('@'));
+        } else {
+          throw new Error("JSON file must contain an array of emails or objects with an 'email' field.");
+        }
+      } else if (ext === 'xlsx' || ext === 'xls') {
+        const arrayBuffer = await file.arrayBuffer();
+        const workbook = XLSX.read(arrayBuffer, { type: 'buffer' });
+        const firstSheetName = workbook.SheetNames[0];
+        const worksheet = workbook.Sheets[firstSheetName];
+        const json = XLSX.utils.sheet_to_json(worksheet);
+        
+        if (json.length === 0) throw new Error("Spreadsheet is empty.");
+        
+        let emailColumn = Object.keys(json[0]).find(h => 
           ['email', 'e-mail', 'mail', 'email address', 'contact', 'to', 'recipient'].includes(h.toLowerCase().trim())
         );
 
-        // Fallback: scan first row for something that looks like an email
         if (!emailColumn) {
-          const firstRow = results.data[0];
           const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-          for (const key in firstRow) {
-            if (emailRegex.test(String(firstRow[key]).trim())) {
+          for (const key in json[0]) {
+            if (emailRegex.test(String(json[0][key]).trim())) {
               emailColumn = key;
               break;
             }
           }
         }
+        
+        if (!emailColumn) throw new Error('Could not find an email column in the spreadsheet.');
+        emails = json.map(row => String(row[emailColumn] || '').trim()).filter(e => e.length > 0 && e.includes('@'));
 
-        if (!emailColumn) {
-          setError('Could not automatically find an email column in the CSV. Please ensure your column is named "email".');
-          setIsLoading(false);
-          return;
-        }
+      } else if (ext === 'csv') {
+        emails = await new Promise((resolve, reject) => {
+          Papa.parse(file, {
+            header: true,
+            skipEmptyLines: true,
+            complete: (results) => {
+              if (!results.data || results.data.length === 0) return reject(new Error('The CSV file is empty.'));
+              
+              let emailColumn = (results.meta.fields || []).find(h => 
+                ['email', 'e-mail', 'mail', 'email address', 'contact', 'to', 'recipient'].includes(h.toLowerCase().trim())
+              );
 
-        const emails = results.data
-          .map(row => String(row[emailColumn]).trim())
-          .filter(email => email.length > 0);
+              if (!emailColumn) {
+                const firstRow = results.data[0];
+                const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+                for (const key in firstRow) {
+                  if (emailRegex.test(String(firstRow[key]).trim())) {
+                    emailColumn = key;
+                    break;
+                  }
+                }
+              }
 
-        if (emails.length === 0) {
-          setError('No valid emails found in the selected column.');
-          setIsLoading(false);
-          return;
-        }
-
-        // Send to backend
-        submitToAPI(emails);
-      },
-      error: (err) => {
-        setError(`Failed to parse CSV: ${err.message}`);
-        setIsLoading(false);
+              if (!emailColumn) return reject(new Error('Could not automatically find an email column in the CSV.'));
+              resolve(results.data.map(row => String(row[emailColumn] || '').trim()).filter(e => e.length > 0 && e.includes('@')));
+            },
+            error: (err) => reject(new Error(`Failed to parse CSV: ${err.message}`))
+          });
+        });
       }
-    });
+
+      if (emails.length === 0) {
+        throw new Error('No valid emails found in the file.');
+      }
+
+      submitToAPI(emails);
+
+    } catch (err) {
+      setError(err.message);
+      setIsLoading(false);
+    }
   };
 
   const submitToAPI = async (emails) => {
@@ -125,9 +158,9 @@ export default function Uploader({ onJobCreated }) {
   return (
     <div className="glass-card">
       <div className="text-center mb-4">
-        <h2>Upload your CSV</h2>
+        <h2>Upload your List</h2>
         <p className="text-muted" style={{ marginTop: '0.5rem' }}>
-          We will automatically detect the email column and verify them.
+          Upload your emails and we will automatically verify them.
         </p>
       </div>
 
@@ -147,7 +180,7 @@ export default function Uploader({ onJobCreated }) {
       >
         <input 
           type="file" 
-          accept=".csv" 
+          accept=".csv,.txt,.json,.xlsx,.xls" 
           style={{ display: 'none' }} 
           onChange={handleFileChange}
           disabled={isLoading}
@@ -155,14 +188,14 @@ export default function Uploader({ onJobCreated }) {
         {isLoading ? (
           <div className="text-center">
             <div style={{ display: 'inline-block', border: '3px solid rgba(255,255,255,0.1)', borderTopColor: 'var(--primary)', borderRadius: '50%', width: '32px', height: '32px', animation: 'spin 1s linear infinite' }}></div>
-            <p className="mt-4">Processing and uploading CSV...</p>
+            <p className="mt-4">Processing and uploading file...</p>
           </div>
         ) : (
           <>
             <UploadCloud size={48} className="dropzone-icon" />
             <div>
-              <p className="dropzone-text">Click or drag & drop your CSV file here</p>
-              <p className="dropzone-subtext">Supports thousands of rows</p>
+              <p className="dropzone-text">Click or drag & drop your file here</p>
+              <p className="dropzone-subtext">Supports CSV, TXT, JSON, Excel (.xlsx, .xls)</p>
             </div>
             <div className="btn btn-primary mt-4">
               <FileType size={18} /> Select File
