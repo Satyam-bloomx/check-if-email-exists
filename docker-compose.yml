@@ -18,6 +18,8 @@ services:
       - RCH__STORAGE__POSTGRES__DB_URL=postgresql://postgres:reacher_password@postgres:5432/reacherdb
       - RCH__WORKER__RABBITMQ__URL=amqp://guest:guest@rabbitmq:5672
       - RCH__WORKER__RABBITMQ__CONCURRENCY=30
+      - RCH__THROTTLE__MAX_REQUESTS_PER_MINUTE=60
+      - RCH__THROTTLE__MAX_REQUESTS_PER_DAY=10000
     depends_on:
       - postgres
       - rabbitmq
