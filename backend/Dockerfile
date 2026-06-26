@@ -25,7 +25,7 @@ RUN mkdir -p backend/src cli/src core/src sqs/src && \
 ENV SQLX_OFFLINE=true
 
 # 3. Build dependencies (this layer will be cached by Docker)
-RUN cargo build --jobs 1 --release --target=x86_64-unknown-linux-musl
+RUN cargo build --release --target=x86_64-unknown-linux-musl
 
 # 4. Remove dummy build artifacts (including fingerprints to force recompilation of local crates)
 RUN rm -rf target/x86_64-unknown-linux-musl/release/deps/reacher* \
@@ -38,7 +38,7 @@ RUN rm -rf target/x86_64-unknown-linux-musl/release/deps/reacher* \
 COPY . .
 
 # 6. Build the actual backend using 1 CPU core to prevent OOM
-RUN cargo build --jobs 1 --bin reacher_backend --release --target=x86_64-unknown-linux-musl
+RUN cargo build --bin reacher_backend --release --target=x86_64-unknown-linux-musl
 
 # ------------------------------------------------------------------------------
 # Final Stage
