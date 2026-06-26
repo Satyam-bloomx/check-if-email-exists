@@ -206,7 +206,7 @@ url = "amqp://guest:guest@localhost:5672"
 # Number of concurrent emails to verify for this worker.
 #
 # Env variable: RCH__WORKER__RABBITMQ__CONCURRENCY
-concurrency = 5
+concurrency = 30
 
 # Below are the configurations for the storage of the email verification
 # results. We currently support the following storage backends:
