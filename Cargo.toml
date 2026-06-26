@@ -6,3 +6,5 @@ codegen-units = 1
 lto = false
 opt-level = "z"
 debug = false
+strip = true
+panic = "abort"
