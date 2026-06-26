@@ -2,7 +2,7 @@
 members = ["backend", "cli", "core", "sqs"]
 
 [profile.release]
-codegen-units = 16
+codegen-units = 1
 lto = false
 opt-level = "z"
 debug = false
