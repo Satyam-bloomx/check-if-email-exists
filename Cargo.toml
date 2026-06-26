@@ -1,2 +1,8 @@
 [workspace]
 members = ["backend", "cli", "core", "sqs"]
+
+[profile.release]
+codegen-units = 16
+lto = false
+opt-level = "z"
+debug = false
